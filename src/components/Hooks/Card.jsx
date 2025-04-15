@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ProductsData } from '../../../Data';
 import { BookMark } from '../Ui/icons';
 import { useCategory } from './Context';

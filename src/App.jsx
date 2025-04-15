@@ -40,7 +40,7 @@ import { useAuth } from "./components/Hooks/Context";
 
 const ProtectedRoute = () => {
   const { user, loading } = useAuth();
-  
+    
   // Show a loading state while Firebase is checking the auth state
   if (loading) return <div>Loading...</div>;
 
