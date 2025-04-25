@@ -90,7 +90,7 @@ export const ProductsData = [
   ]
 
 
-export const CompanyName = "AworanCommerce"
+export const CompanyName = "G.O Multi-Concepts"
 
 export const FormatCurrency = (amount) => {
   return new Intl.NumberFormat("en-US", {

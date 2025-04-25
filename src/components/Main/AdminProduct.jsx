@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import "../Styles/Dashboard.css";
 import {
@@ -8,7 +9,9 @@ import {
   deleteDoc,
   doc,
 } from "firebase/firestore";
-import { db } from "../Constant/Firebase";
+import { db, storage } from "../Constant/Firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { FormatCurrency } from "../../../Data";
 
 const AdminProduct = () => {
   const [form, setForm] = useState({
@@ -18,12 +21,13 @@ const AdminProduct = () => {
     image: "",
     description: "",
   });
+  const [imageFile, setImageFile] = useState(null); // 🔥 New state
   const [editingId, setEditingId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [products, setProducts] = useState([]);
 
   const productsRef = collection(db, "AworanProducts");
-  const [loading, setLoading] = useState(false)
 
-  const [products, setProducts] = useState([]);
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -36,31 +40,45 @@ const AdminProduct = () => {
     }));
     setProducts(list);
   };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImageFile(file); // 🔥 Save file
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true)
+    setLoading(true);
+
+    let imageUrl = form.image;
+
+    if (imageFile) {
+      const storageRef = ref(storage, `products/${imageFile.name}`);
+      await uploadBytes(storageRef, imageFile);
+      imageUrl = await getDownloadURL(storageRef);
+    }
+
     const data = {
       ...form,
       price: parseFloat(form.price),
       stock: parseInt(form.stock),
+      image: imageUrl,
     };
 
-    if (editingId) {
-      setLoading(true)
-      const productDoc = doc(db, "AworanProducts", editingId);
-      await updateDoc(productDoc, data);
-      setEditingId(null);
-      setLoading(false)
-    } else {
-      setLoading(true)
-      await addDoc(productsRef, data);
-      setLoading(false)
+    try {
+      if (editingId) {
+        const productDoc = doc(db, "AworanProducts", editingId);
+        await updateDoc(productDoc, data);
+        setEditingId(null);
+      } else {
+        await addDoc(productsRef, data);
+      }
+    } catch (error) {
+      console.error("Error saving product:", error);
     }
 
     setForm({
@@ -70,6 +88,8 @@ const AdminProduct = () => {
       image: "",
       description: "",
     });
+    setImageFile(null); // 🔥 Reset image
+    setLoading(false);
     fetchProducts();
   };
 
@@ -93,11 +113,8 @@ const AdminProduct = () => {
             Product(s) Left
           </p>
         </div>
-
-        <div className="ProductLeft">
-          {/* <button>Create New Product </button> */}
-        </div>
       </div>
+
       <div className="admin-container">
         <h2>Admin Product Manager</h2>
 
@@ -122,14 +139,14 @@ const AdminProduct = () => {
             <option value={1}>In Stock</option>
             <option value={0}>Out of Stock</option>
           </select>
+
+          {/* 🔥 Upload input */}
           <input
-            type="text"
-            name="image"
-            placeholder="Image URL"
-            value={form.image}
-            onChange={handleChange}
-            required
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
           />
+
           <textarea
             name="description"
             placeholder="Product Description"
@@ -137,6 +154,7 @@ const AdminProduct = () => {
             onChange={handleChange}
             required
           />
+
           <button type="submit">
             {loading ? "Loading..." : editingId ? "Update Product" : "Add Product"}
           </button>
@@ -148,7 +166,7 @@ const AdminProduct = () => {
               <img src={prod.image} alt={prod.name} />
               <h3>{prod.name}</h3>
               <p>{prod.description}</p>
-              <p><strong>${prod.price.toFixed(2)}</strong></p>
+              <p><strong>{"#"}{FormatCurrency(prod.price)}</strong></p>
               <p className={prod.stock ? "in-stock" : "out-stock"}>
                 {prod.stock ? "In Stock" : "Out of Stock"}
               </p>
@@ -161,7 +179,6 @@ const AdminProduct = () => {
         </div>
       </div>
     </>
-
   );
 };
 

@@ -4,7 +4,7 @@ import { FormatCurrency } from "../../../Data";
 import { useCart } from "../Hooks/Context";
 
 // eslint-disable-next-line react/prop-types
-const ProductCard = ({ id, name, price, cover, description, data, }) => {
+const ProductCard = ({ id, name, price, cover, description, data,instock }) => {
     const { addToCart } = useCart();
     const [showNotification, setShowNotification] = useState(false);
 
@@ -29,6 +29,9 @@ const ProductCard = ({ id, name, price, cover, description, data, }) => {
                 <div className="NameCon">
                     <h3 className="ProductName">{name}</h3>
                     <p className="amount">{FormatCurrency(price)}</p>
+                    <p className={instock ? "in-stock" : "out-stock"}>
+                {instock ? "In Stock" : "Out of Stock"}
+              </p>
                 </div>
 
 

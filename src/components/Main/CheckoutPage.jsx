@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import "../Styles/Checkout.css";
 import { PaystackButton } from 'react-paystack';
-import { useReactToPrint } from 'react-to-print';
 import { CompanyName, FormatCurrency } from '../../../Data';
 import { useCart } from '../Hooks/Context';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../Constant/Firebase';
+import html2pdf from "html2pdf.js"; // Import html2pdf.js
 
 export const CheckoutPage = () => {
     const receiptRef = useRef();
@@ -26,20 +26,22 @@ export const CheckoutPage = () => {
         return Math.random().toString(36).substr(2, 5).toUpperCase();
     };
 
-    console.log(generateUniqueId());  // Example output: "3F1KZ"
-    
-    const printReceipt = useReactToPrint({
-        contentRef: receiptRef,
-        documentTitle: `Receipt-${generateUniqueId()}`,
-        onAfterPrint: () => {
-            // Hide receipt after print (optional)
-            receiptRef.current.style.display = 'none';
-        }
-    });
+    // Function to save receipt as PDF (no print dialog)
+    const saveReceiptAsPDF = () => {
+        const element = receiptRef.current;
+        const opt = {
+            margin: 0.5,
+            filename: `Receipt-${generateUniqueId()}.pdf`,
+            image: { type: "jpeg", quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+        };
+        html2pdf().set(opt).from(element).save();
+    };
 
     const handlePaymentSuccess = async () => {
-        if (!name || !location || !number) {
-            alert('Pls enter all delivery details');
+        if (!name || !location || !number || !email) {
+            alert("Please enter all delivery details.");
             return;
         }
 
@@ -55,10 +57,12 @@ export const CheckoutPage = () => {
         };
 
         try {
-            await addDoc(collection(db, 'orders'), orderDetails);
-            alert('Payment Successful! Printing Receipt...');
-            printReceipt();
-            clearCart();
+            await addDoc(collection(db, "orders"), orderDetails);
+            alert("Payment Successful! Saving Receipt...");
+            setTimeout(() => {
+                saveReceiptAsPDF();  // Save receipt as PDF
+                clearCart();
+            }, 1000);
         } catch (error) {
             console.error("Error saving order:", error);
             alert("Order not saved! Please try again.");

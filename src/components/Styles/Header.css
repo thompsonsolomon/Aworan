@@ -10,7 +10,17 @@ header {
     z-index: 999;
     top: 0;
 }
-
+@media (max-width: 768px) {
+    .hideRespo {
+        display: none;
+    }
+    .header nav {
+        gap: 10px;
+    }
+    header ul {
+        width: 50px !important;
+    }
+}
 header .header {
     display: flex;
     justify-content: space-between;

@@ -9,9 +9,6 @@ import { useCart } from '../Hooks/Context';
 import { CompanyName } from '../../../Data';
 function Header() {
     const { cart } = useCart();
-
-
-    console.log(cart.length)
     return (
         <header>
             <div className="header">
@@ -23,7 +20,7 @@ function Header() {
                 <nav>
                     <Search />
                     <ul>
-                        <li>
+                        <li className='hideRespo'>
                             <Link to="/">
                                 Products
                             </Link>

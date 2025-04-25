@@ -9,8 +9,13 @@ function Dashboard() {
                 <nav>
                     <ul>
                         <li>
-                            <Link to="/dashboard">
+                            <Link to="/">
                                 Home
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/dashboard">
+                                Products
                             </Link>
                         </li>
 

@@ -1,12 +1,7 @@
 // src/App.js
 import { Route, Routes } from "react-router-dom";
-import { Checkout, Product } from "./Pages";
-import { CartPage } from "./components/Main/Cart";
-import NotFound from "./components/Main/NotFound";
-import ProductDetails from "./Pages/ProductDetails";
-import Auth from "./Pages/Auth";
-import Dashboard from "./Pages/Dashboard";
-import AdminOrders from "./Pages/AdminOrders";
+import { AdminOrders, Auth, CartPage, Checkout, Dashboard, NotFound, Product, ProductDetails } from "./Pages";
+
 
 function App() {
   return (
@@ -15,8 +10,7 @@ function App() {
         <Route path="/" element={<Product />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/cart" element={<CartPage />} />
-        
-        {/* Protected Routes wrapped in ProtectedRoute component */}
+
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/orders" element={<AdminOrders />} />
@@ -24,8 +18,7 @@ function App() {
 
         <Route path="/auth" element={<Auth />} />
         <Route path="/product/:id" element={<ProductDetails />} />
-        
-        {/* Catch-all route for 404 */}
+
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
@@ -40,7 +33,7 @@ import { useAuth } from "./components/Hooks/Context";
 
 const ProtectedRoute = () => {
   const { user, loading } = useAuth();
-    
+
   // Show a loading state while Firebase is checking the auth state
   if (loading) return <div>Loading...</div>;
 

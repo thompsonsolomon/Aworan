@@ -140,8 +140,12 @@ export const AuthProvider = ({ children }) => {
   // Listen for auth state changes (for persistent login)
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false); // Stop loading once the user state is set
+      if (currentUser) {
+        setUser(currentUser);
+      } else {
+        setUser(null);
+      }
+      setLoading(false);// Stop loading once the user state is set
     });
 
     return () => unsub();

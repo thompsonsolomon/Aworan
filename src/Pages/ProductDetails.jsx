@@ -6,6 +6,7 @@ import { BackIcon } from "../components/Ui/icons";
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../components/Constant/Firebase";
+import Foot from "../components/Footer/Footer";
 
 const ProductDetails = () => {
     const navigate = useNavigate();
@@ -50,7 +51,6 @@ const ProductDetails = () => {
     if (!selectedProduct) {
         return <p className="text-center text-red-500">Product not found!</p>;
     }
-
     return (
         <div>
             <Header />
@@ -77,6 +77,8 @@ const ProductDetails = () => {
                         </div>
                         <p className="text-[16px] text-p2 mt-2">{selectedProduct.description}</p>
                         <p className="text-lg text-s3 mt-2 font-bold">{FormatCurrency(selectedProduct.price)}</p>
+                        <p className={selectedProduct.stock ? "in-stock" : "out-stock"}>
+                        {selectedProduct.stock ? "In Stock" : "Out of Stock"} </p>
 
                         {/* Add to Cart Button */}
                         <button
@@ -88,6 +90,8 @@ const ProductDetails = () => {
                     </div>
                 </div>
             </div>
+
+            <Foot />
         </div>
     );
 };
