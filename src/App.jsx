@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import { AdminOrders, Auth, CartPage, Checkout, Dashboard, NotFound, Product, ProductDetails } from "./Pages";
 
 
-const siteSuspended = true;
+const siteSuspended = false;
 function App() {
   if (siteSuspended) {
     return (
