@@ -13,7 +13,7 @@ function App() {
           <p><strong>This website has been temporarily suspended due to non-payment.</strong></p>
           <p>The owner of this domain has failed to settle the required service fees for website design, hosting, and maintenance.</p>
           <p>If you are the website owner and would like to restore access, please contact the developer or service provider immediately.</p>
-          <p className="warning">This website will remain offline until all outstanding balances are cleared.</p>
+          <p className="warning">This website will remain offline until all outstanding balances are cleared thanks.</p>
         </div>
       </div>
     );
